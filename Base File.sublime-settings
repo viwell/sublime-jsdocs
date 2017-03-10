@@ -41,6 +41,16 @@
   // @property {Number}        blahblah   desc3
   "jsdocs_align_tags": "deep",
 
+  // The number of spaces to add before the leading * in lines under the first line of each
+  // paragraph. For example, a value of 3 might look like this:
+  // /**
+  //    * Duis sed arcu non tellus eleifend ullamcorper quis non erat.
+  //    * @param  {String} foo Lorem ipsum dolor sit amet.
+  //    * @param  {Number} bar Nullam fringilla feugiat pretium.
+  //    * @return {[Type]}
+  //    */
+  "jsdocs_star_indentation": 1,
+
   // Any additional boilerplate tags which should be added to each block. Should be an array of strings.
   // Note that this only applies when a docblock is opened directly preceding a function.
   // Tab points can be added by using snippet syntax, eg: ${1:default text}

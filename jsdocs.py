@@ -178,6 +178,7 @@ class JsdocsCommand(sublime_plugin.TextCommand):
         self.trailingString = escape(re.sub('\\s*\\*\\/\\s*$', '', self.trailingString))
 
         self.indentSpaces = " " * max(0, self.settings.get("jsdocs_indentation_spaces", 1))
+        self.startIndentation = " " * max(0, self.settings.get("jsdocs_star_indentation", 1))
         self.prefix = "*"
 
         settingsAlignTags = self.settings.get("jsdocs_align_tags", 'deep')
@@ -306,7 +307,7 @@ class JsdocsCommand(sublime_plugin.TextCommand):
 
     def createSnippet(self, out):
         snippet = ""
-        closer = self.parser.settings['commentCloser']
+        closer = self.startIndentation + self.parser.settings['commentCloser']
         if out:
             if self.settings.get('jsdocs_spacer_between_sections') == True:
                 lastTag = None
@@ -328,9 +329,9 @@ class JsdocsCommand(sublime_plugin.TextCommand):
                             out.insert(idx, "")
                         lastLineIsTag = True
             for line in out:
-                snippet += "\n " + self.prefix + (self.indentSpaces + line if line else "")
+                snippet += "\n" + self.startIndentation + self.prefix + (self.indentSpaces + line if line else "")
         else:
-            snippet += "\n " + self.prefix + self.indentSpaces + "${0:" + self.trailingString + '}'
+            snippet += "\n" + self.startIndentation + self.prefix + self.indentSpaces + "${0:" + self.trailingString + '}'
 
         snippet += "\n" + closer
         return snippet
@@ -616,7 +617,7 @@ class JsdocsJavascript(JsdocsParser):
                     + '|'
                     + '(?:' + identifier + r'\s*\(.*\)\s*\{)'
                     + ')',
-            "commentCloser": " */",
+            "commentCloser": "*/",
             "bool": "Boolean",
             "function": "Function"
         }
@@ -761,7 +762,7 @@ class JsdocsPHP(JsdocsParser):
             'fnIdentifier': nameToken,
             'typeIdentifier': '\\\\?' + nameToken + '(\\\\' + nameToken + ')*',
             'fnOpener': 'function(?:\\s+' + nameToken + ')?\\s*\\(',
-            'commentCloser': ' */',
+            'commentCloser': '*/',
             'bool': 'bool' if shortPrimitives else 'boolean',
             'function': "function"
         }
@@ -884,7 +885,7 @@ class JsdocsCPP(JsdocsParser):
             'typeInfo': False,
             'curlyTypes': False,
             'typeTag': 'param',
-            'commentCloser': ' */',
+            'commentCloser': '*/',
             'fnIdentifier': identifier,
             'varIdentifier': '(' + identifier + ')\\s*(?:\\[(?:' + identifier + r')?\]|\((?:(?:\s*,\s*)?[a-z]+)+\s*\))*',
             'fnOpener': identifier + '\\s+' + identifier + '\\s*\\(',
@@ -1005,7 +1006,7 @@ class JsdocsActionscript(JsdocsParser):
             'typeInfo': False,
             'curlyTypes': False,
             'typeTag': '',
-            'commentCloser': ' */',
+            'commentCloser': '*/',
             'fnIdentifier': nameToken,
             'varIdentifier': '(%s)(?::%s)?' % (nameToken, nameToken),
             'fnOpener': 'function(?:\\s+[gs]et)?(?:\\s+' + nameToken + ')?\\s*\\(',
@@ -1062,7 +1063,7 @@ class JsdocsObjC(JsdocsParser):
             "varIdentifier": identifier,
             "fnIdentifier":  identifier,
             "fnOpener": '^\s*[-+]',
-            "commentCloser": " */",
+            "commentCloser": "*/",
             "bool": "Boolean",
             "function": "Function"
         }
@@ -1146,7 +1147,7 @@ class JsdocsJava(JsdocsParser):
             "varIdentifier": identifier,
             "fnIdentifier":  identifier,
             "fnOpener": identifier + '(?:\\s+' + identifier + ')?\\s*\\(',
-            "commentCloser": " */",
+            "commentCloser": "*/",
             "bool": "Boolean",
             "function": "Function"
         }
@@ -1268,7 +1269,7 @@ class JsdocsRust(JsdocsParser):
             "varIdentifier": ".*",
             "fnIdentifier":  ".*",
             "fnOpener": "^\s*fn",
-            "commentCloser": " */",
+            "commentCloser": "*/",
             "bool": "Boolean",
             "function": "Function"
         }
@@ -1537,7 +1538,7 @@ class JsdocsTypescript(JsdocsParser):
             "varIdentifier": identifier,
             "fnIdentifier": identifier,
             "fnOpener": 'function(?:\\s+' + identifier + ')?\\s*\\(',
-            "commentCloser": " */",
+            "commentCloser": "*/",
             "bool": "Boolean",
             "function": "Function",
             "functionRE":
